@@ -1,0 +1,27 @@
+#!/bin/bash
+BRANCH=$1
+if git stash  | grep "No local changes to save" &> /dev/null ; then
+  echo "No Changes to stash!";
+  echo "Fetching and Pulling";
+  git fetch origin;
+  if [[ $BRANCH != ""  ]] ; then
+  echo "Pulling : $BRANCH";
+  git pull origin $BRANCH;
+  else
+  git pull;
+  fi 
+  exit 0;
+fi
+  echo "Changes Found! and stashed!";
+  echo "Fetching and Pulling";
+  git fetch origin;
+  if [[ $BRANCH != ""  ]] ; then
+  echo "Pulling : $BRANCH";
+  git pull origin $BRANCH;
+  else
+  git pull;
+  fi
+  echo "Unstashing!";
+  git stash pop stash@{0};
+  exit 0;
+  

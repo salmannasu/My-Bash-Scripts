@@ -1,0 +1,26 @@
+#!/bin/bash
+
+function list_empty_windows() {
+  wmctrl -lp | awk "{if(\$5==\"\"){print\$3,\$1}}"
+}
+
+function list_wm_pids() {
+  ps aux | grep cinnamon | perl -pe 's/.*\+\s+(\d+)\s+.*/\1/'
+  pidof nautilus | tr ' ' '\n'
+  pidof caja | tr ' ' '\n'
+  pidof nemo | tr ' ' '\n'
+}
+
+function list_popup_windows() {
+  local empty_window_file=$(mktemp)
+  local window_manager_pid_file=$(mktemp)
+  list_empty_windows > "$empty_window_file"
+  list_wm_pids | sort > "$window_manager_pid_file"
+  join "$empty_window_file" "$window_manager_pid_file"
+}
+
+function main() {
+  list_popup_windows | cut -d ' ' -f 2 | xargs -n1 -P100 wmctrl -ic
+}
+
+main

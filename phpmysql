@@ -1,0 +1,36 @@
+#!/bin/bash
+#/etc/init.d/phpmysql
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=phpmysql
+DESC=phpmysql
+
+case "$1" in
+	start)
+		echo "Starting PHP and MySQL!"
+		/usr/bin/spawn-fcgi -u ateeq -f /opt/lampp/bin/php-cgi -a 127.0.0.1 -p 9000
+                echo "Started PHP CGI Server as user 'ateeq'"
+		/opt/lampp/xampp startmysql
+		echo "Started MySQL from XAMPP"
+		;;		
+	stop)
+		echo "PHP PID `pidof php-cgi` "
+                kill -9 `pidof php-cgi`
+                echo "Killed PHP Server!"
+             	/opt/lampp/xampp stop
+		echo "Killed MySQL Server!"
+		;;
+	restart)
+		echo "PHP PID `pidof php-cgi` "
+		kill -9 `pidof php-cgi`
+		echo "Killed PHP Server!"
+		/usr/bin/spawn-fcgi -u ateeq -f /opt/lampp/bin/php-cgi -a 127.0.0.1 -p 9000
+		echo "Started PHP CGI Server as user 'ateeq'"
+		service nginx restart
+		echo "Restarted nginx"
+		/opt/lampp/xampp reload
+		;;
+	*)
+		echo "Usage: ./phpmysql start | stop | restart "
+esac
+
+exit 0

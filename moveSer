@@ -1,0 +1,34 @@
+#!/bin/bash
+BEAUTIFY=$1
+
+if [[ $BEAUTIFY == '' ]]; then
+   echo Please set Beautify Tag Yes[Yy]/No[Nn]
+   exit 0
+fi
+
+
+for formFolder in `ls`; do
+	if [ -d $formFolder/ReportStructure ]; then 
+		cd $formFolder/ReportStructure
+			for reportsFolder in `ls`; do
+				if [ -f $reportsFolder/report_master.* ]; then
+				    echo ReportFolder : `pwd`
+				    cp $reportsFolder/*.ser ../Reports/
+				    if [ $BEAUTIFY == 'Y' ] || [ $BEAUTIFY == 'y' ]; then
+                                       echo "`cat ../Reports/report_master.ser | python -m json.tool`" > ../Reports/report_master.ser
+                                       echo "`cat ../Reports/report_items.ser | python -m json.tool`" > ../Reports/report_items.ser
+				    fi
+				    break
+				fi
+			done
+		cd ../../
+	fi
+
+	if [ -d $formFolder/FormStructure ] && ([ $BEAUTIFY == 'Y' ] || [ $BEAUTIFY == 'y' ]); then
+		cd $formFolder/FormStructure
+		echo FormStructureFolder : `pwd`
+		echo "`cat form_master.ser | python -m json.tool`" > form_master.ser
+		echo "`cat form_items.ser | python -m json.tool`" > form_items.ser
+		cd ../../
+	fi
+done

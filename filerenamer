@@ -1,0 +1,44 @@
+#!/bin/bash
+
+NEWFILE=$1
+INCVAL=$2
+if [[ $NEWFILE == '' || $INCVAL == '' ]]
+	then
+	echo "Usage : $0 <value to increment from> <no of steps to increment to. You can give 1 by default>"
+	exit 0
+fi	
+
+for file in `ls|sort -g -r`
+do
+    filename=$(basename "$file")
+    extension=${filename##*.}
+    filename=${filename%.*}
+
+    if [ $filename -ge $NEWFILE ]
+    then
+	echo mv "$file" "$(($filename + $INCVAL))".$extension
+    fi
+done
+
+while true; do
+read -p  "Do you wish to continue?  Y or N" yn
+    case $yn in
+        [Yy]* ) 
+			for file in `ls|sort -g -r`
+			do
+			    filename=$(basename "$file")
+			    extension=${filename##*.}
+			    filename=${filename%.*}
+
+			    if [ $filename -ge $NEWFILE ]
+			    then
+				echo mv "$file" "$(($filename + $INCVAL))".$extension
+				mv "$file" "$(($filename + $INCVAL))".$extension
+				echo "moved!"
+			    fi
+			done
+		break;;
+        [Nn]* ) exit;;
+		* ) echo "Invalid Input!";;
+    esac
+done

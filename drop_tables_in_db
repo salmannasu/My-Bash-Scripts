@@ -1,0 +1,60 @@
+#!/bin/bash
+DATE=`date +%Y-%m-%d:%H:%M:%S`
+PWD=`pwd`
+echo Params Passed
+echo 'DB NAME $1' = $1
+echo 'File $2' = $2
+echo 'Backup Flag $3' = $3
+echo 'PSWD $4' = $4
+
+if [[ $4 == '' ]]
+   then
+        PSSD=
+else
+        PSSD=$4
+        PSSD='-p'${PSSD}
+fi
+echo ${PSSD}
+#MYSQL_BIN="/opt/nginxstack-1.10.1-1/mysql/bin/"
+MYSQL_BIN=""
+if [[ $1 != '' ]]
+        then
+                if [[ $3 == 'b' ]]
+                                then
+                                        "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 > "${PWD}"/$1_$DATE.sql
+                                        echo "Backed Up Successfully!"
+                elif [[ $3 == 'no_backup' ]]
+                                then
+                                        echo "Did not Backup!!!, As the flag 'no_backup' was given!"
+                else
+                                echo "No backup flag was given! So. Stoping please use 'b' to Backup or 'no_backup' to not backup." 
+                                echo "If running from gist please make first param as 0"
+                                exit 0
+                fi
+
+                "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 --add-drop-table | grep 'DROP TABLE' | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
+                echo "Dropped Successfully!"
+
+                if [[ $2 != ''  ]]
+                        then
+                        FILENAME=$2
+                                if [[ "${FILENAME}" == *.sql ]]
+                                        then
+                                                "${MYSQL_BIN}"mysql -uroot ${PSSD} $1 < "${PWD}"/"${FILENAME}"
+                                                echo "Imported Successfully from SQL!"
+						notify-send "Database Import : $1" "Imported Successfully!"
+                                                exit 0
+                                fi
+                                if [[ "${FILENAME}"  == *.zip ]]
+                                        then
+                                                unzip -c "${FILENAME}" | sed 1,2d | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
+                                                echo "Imported Successfully from Zip!"
+						notify-send "Database Import : $1" "Imported Successfully!"
+                                                exit 0
+                                fi
+                fi
+        exit 0
+fi
+
+echo "Usage : ./drop_tables_in_db <db_name> <filename.sql or filename.zip> <'b' for backup or 'no_backup' for no backup> <db pwd>"
+echo "Note: If running from gist please make first param as 0"

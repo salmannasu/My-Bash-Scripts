@@ -1,0 +1,30 @@
+#!/bin/bash
+if [[ `whoami` != 'root' ]]; then
+echo "Please run as root"
+exit 0
+fi
+
+case $1 in
+	on)
+	sudo sh -c "cat /opt/lampp/etc/php.ini | sed 's/xdebug.remote_enable=off/xdebug.remote_enable=on/' > /opt/lampp/etc/php.ini"
+	sudo /etc/init.d/phpmysql restart
+	sleep 1	
+	echo "Current Status"
+	php -i | grep 'xdebug support'
+	;;
+
+	off)
+	sudo sh -c "cat /opt/lampp/etc/php.ini | sed 's/xdebug.remote_enable=on/xdebug.remote_enable=off/' > /opt/lampp/etc/php.ini"
+        sudo /etc/init.d/phpmysql restart
+	sleep 1
+	echo "Current Status"
+        php -i | grep 'xdebug support'	
+	;;
+	
+	*)
+	echo "usage : sudo ./toggle_xdebud { on | off }"
+	echo "Current Status"
+        php -i | grep 'xdebug support'	
+	;;
+
+esac
