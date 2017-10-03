@@ -1,4 +1,12 @@
 ## Add this file as bash_aliases in ~/.bash_rc
+# You may need to add something like
+# 
+# MY_BASH_ALIASES="~/Documents/My_Scripts/bash_aliases"
+# if [ -f ${MY_BASH_ALIASES} ]; then
+#     . ${MY_BASH_ALIASES}
+#         echo "Loaded : "${MY_BASH_ALIASES}
+#         fi
+#
 
 alias composer='/home/ateeq-ahmed/Documents/composer/./composer.phar'
 alias composer-dump='/home/ateeq-ahmed/Documents/composer/./composer.phar dump-autoload --optimize'
