@@ -1,0 +1,8 @@
+#!/bin/bash
+#by ateeq72@xda
+export IP=192.168.1.0/24
+echo Finding Devices within the same network!
+echo Make sure IP Address is correctly Configured!
+echo Your System IP is `ifconfig | grep wlo1 -A 1 | grep inet` 
+echo And the IP you have set is $IP
+sudo nmap -sP $IP
