@@ -6,5 +6,5 @@ fi
 
 FILEPREFIX=`date +%Y-%m-%d_%H-%M`
 mysqldump  --routines=true -uroot $1 > $1_${FILEPREFIX}.sql && zip $1_${FILEPREFIX}.zip $1_${FILEPREFIX}.sql
-rm $1_${FILEPREFIX}.sql
+#rm $1_${FILEPREFIX}.sql
 echo "Removed : "$1_${FILEPREFIX}.sql
