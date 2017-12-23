@@ -1,30 +1,43 @@
 #!/bin/bash
 if [[ `whoami` != 'root' ]]; then
 echo "Please run as root"
-exit 0
+exit 0	
 fi
+
+NGINXSTACKROOT="/opt/nginxstack-1.10.1-1"
+PHPINI=${NGINXSTACKROOT}"/php/etc/php.ini"
+PHPINIINTER="./php.ini.inter"
+
+touch ${PHPINIINTER}
+
+if [[ ! -f ${PHPINIINTER} ]]; then
+	echo "Creating Intermediate File Failed!"
+	exit 1
+fi	
 
 case $1 in
 	on)
-	sudo sh -c "cat /opt/lampp/etc/php.ini | sed 's/xdebug.remote_enable=off/xdebug.remote_enable=on/' > /opt/lampp/etc/php.ini"
-	sudo /etc/init.d/phpmysql restart
+	cat ${PHPINI} | sed 's/xdebug.remote_enable=0/xdebug.remote_enable=1/' | sed 's/xdebug.profiler_enable=0/xdebug.remote_enable=1/' > ${PHPINIINTER}
+    cp ${PHPINIINTER} ${PHPINI}
+	sudo ${NGINXSTACKROOT}/ctlscript.sh restart php-fpm
 	sleep 1	
 	echo "Current Status"
-	php -i | grep 'xdebug support'
+    grep 'xdebug.remote_enable' ${PHPINI}
 	;;
 
 	off)
-	sudo sh -c "cat /opt/lampp/etc/php.ini | sed 's/xdebug.remote_enable=on/xdebug.remote_enable=off/' > /opt/lampp/etc/php.ini"
-        sudo /etc/init.d/phpmysql restart
+	cat ${PHPINI} | sed 's/xdebug.remote_enable=1/xdebug.remote_enable=0/' | sed 's/xdebug.profiler_enable=1/xdebug.remote_enable=0/' > ${PHPINIINTER}
+	cp ${PHPINIINTER} ${PHPINI}
+    sudo ${NGINXSTACKROOT}/ctlscript.sh restart php-fpm
 	sleep 1
 	echo "Current Status"
-        php -i | grep 'xdebug support'	
+    grep 'xdebug.remote_enable' ${PHPINI}	
 	;;
 	
 	*)
-	echo "usage : sudo ./toggle_xdebud { on | off }"
+	echo "usage : sudo ./toggle_xdebug { on | off }"
 	echo "Current Status"
-        php -i | grep 'xdebug support'	
+    grep 'xdebug.remote_enable' ${PHPINI}
 	;;
 
 esac

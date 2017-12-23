@@ -59,4 +59,4 @@ alias import_schema=' ls *.sql | while read line; do echo $line; line=`basename 
 alias vga_card_status='sudo cat /sys/kernel/debug/vgaswitcheroo/switch'
 alias use_amd='DRI_PRIME=1'
 alias phpd='php -dxdebug.remote_autostart'
-
+alias steam="LIBGL_DRI3_DISABLE=1 /usr/bin/steam"
