@@ -35,6 +35,7 @@ if [[ $1 != '' ]]
 
                 "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 --add-drop-table | grep 'DROP TABLE' | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
                 echo "Dropped Successfully!"
+		echo "Drop Finished at : `date +%d-%m-%Y_%r`"
 
                 if [[ $2 != ''  ]]
                         then
@@ -44,6 +45,7 @@ if [[ $1 != '' ]]
                                                 "${MYSQL_BIN}"mysql -uroot ${PSSD} $1 < "${PWD}"/"${FILENAME}"
                                                 echo "Imported Successfully from SQL!"
 						notify-send "Database Import : $1" "Imported Successfully!"
+						echo "Finished at : `date +%d-%m-%Y_%r`"
                                                 exit 0
                                 fi
                                 if [[ "${FILENAME}"  == *.zip ]]
@@ -51,10 +53,10 @@ if [[ $1 != '' ]]
                                                 unzip -c "${FILENAME}" | sed 1,2d | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
                                                 echo "Imported Successfully from Zip!"
 						notify-send "Database Import : $1" "Imported Successfully!"
+						echo "Finished at : `date +%d-%m-%Y_%r`"
                                                 exit 0
                                 fi
                 fi
-		echo "Finished at : `date +%d-%m-%Y_%r`"
         exit 0
 fi
 
