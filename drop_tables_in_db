@@ -19,6 +19,7 @@ echo ${PSSD}
 MYSQL_BIN=""
 if [[ $1 != '' ]]
         then
+		echo "Started at : `date +%d-%m-%Y_%r`"
                 if [[ $3 == 'b' ]]
                                 then
                                         "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 > "${PWD}"/$1_$DATE.sql
@@ -53,6 +54,7 @@ if [[ $1 != '' ]]
                                                 exit 0
                                 fi
                 fi
+		echo "Finished at : `date +%d-%m-%Y_%r`"
         exit 0
 fi
 
