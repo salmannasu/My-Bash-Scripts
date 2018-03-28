@@ -32,7 +32,7 @@ if [[ $1 != '' ]]
                                 exit 0
                 fi
 
-                "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 --add-drop-table | grep 'DROP TABLE' | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
+                "${MYSQL_BIN}"mysql -uroot ${PSSD} -e "DROP DATABASE IF EXISTS $1;"
                 echo "Dropped Successfully!"
 
                 if [[ $2 != ''  ]]
@@ -40,6 +40,7 @@ if [[ $1 != '' ]]
                         FILENAME=$2
                                 if [[ "${FILENAME}" == *.sql ]]
                                         then
+                                                "${MYSQL_BIN}"mysql -uroot ${PSSD} -e "CREATE DATABASE IF NOT EXISTS $1 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
                                                 "${MYSQL_BIN}"mysql -uroot ${PSSD} $1 < "${PWD}"/"${FILENAME}"
                                                 echo "Imported Successfully from SQL!"
 						notify-send "Database Import : $1" "Imported Successfully!"
@@ -47,6 +48,7 @@ if [[ $1 != '' ]]
                                 fi
                                 if [[ "${FILENAME}"  == *.zip ]]
                                         then
+                                                "${MYSQL_BIN}"mysql -uroot ${PSSD} -e "CREATE DATABASE IF NOT EXISTS $1 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
                                                 unzip -c "${FILENAME}" | sed 1,2d | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
                                                 echo "Imported Successfully from Zip!"
 						notify-send "Database Import : $1" "Imported Successfully!"
