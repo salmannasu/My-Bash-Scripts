@@ -15,14 +15,14 @@ else
         PSSD='-p'${PSSD}
 fi
 echo ${PSSD}
-#MYSQL_BIN="/opt/nginxstack-1.12.2-3/mysql/bin/"
+#MYSQL_BIN="/opt/nginxstack-1.10.1-1/mysql/bin/"
 MYSQL_BIN=""
 if [[ $1 != '' ]]
         then
 		echo "Started at : `date +%d-%m-%Y_%r`"
                 if [[ $3 == 'b' ]]
                                 then
-                                        "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 > "${PWD}"/$1_$DATE.sql
+                                        "${MYSQL_BIN}"mysqldump -uroot ${PSSD} $1 > /home/mohamed/Downloads/MySQL_Backups/$1_$DATE.sql
                                         echo "Backed Up Successfully!"
                 elif [[ $3 == 'no_backup' ]]
                                 then
@@ -43,6 +43,7 @@ if [[ $1 != '' ]]
                                 if [[ "${FILENAME}" == *.sql ]]
                                         then
                                                 "${MYSQL_BIN}"mysql -uroot ${PSSD} -e "CREATE DATABASE IF NOT EXISTS $1 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+						echo "Running ... : ${MYSQL_BIN}mysql -uroot ${PSSD} $1 < ${PWD}/${FILENAME}"
                                                 "${MYSQL_BIN}"mysql -uroot ${PSSD} $1 < "${PWD}"/"${FILENAME}"
                                                 echo "Imported Successfully from SQL!"
 						notify-send "Database Import : $1" "Imported Successfully!"
@@ -52,7 +53,8 @@ if [[ $1 != '' ]]
                                 if [[ "${FILENAME}"  == *.zip ]]
                                         then
                                                 "${MYSQL_BIN}"mysql -uroot ${PSSD} -e "CREATE DATABASE IF NOT EXISTS $1 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-                                                unzip -c "${FILENAME}" | sed 1,2d | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
+                                                echo "Running ... : unzip -c ${FILENAME} | sed 1,2d | ${MYSQL_BIN}mysql -uroot ${PSSD} $1" 
+						unzip -c "${FILENAME}" | sed 1,2d | "${MYSQL_BIN}"mysql -uroot ${PSSD} $1
                                                 echo "Imported Successfully from Zip!"
 						notify-send "Database Import : $1" "Imported Successfully!"
 						echo "Finished at : `date +%d-%m-%Y_%r`"
