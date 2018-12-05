@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for i in `ls app/database/` ; 
+	do 
+		echo -e "$i - \033[1m `ls app/database/$i  | sort -nr | head -1`\033[0m"; 
+done
