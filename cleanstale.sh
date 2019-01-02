@@ -6,3 +6,5 @@
 find /tmp -type s -exec /bin/touch {} \;
 find /tmp -type d -empty -mtime +37 -exec /bin/rmdir {} \;
 find /tmp -type f -mtime +37 -exec rm -rf {} 
+
+Nai karte...
